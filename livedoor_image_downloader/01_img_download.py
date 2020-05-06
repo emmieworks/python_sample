@@ -1,9 +1,10 @@
 import re
 import os
-import urllib
+import urllib.request
+import urllib.error
 
-current_url = "https://livedoor.blogimg.jp/zeroforest" # 現在のURL
-img_url = current_url+'/*imgs/[\w/:%#\$&\?\(\)~\.=\+\-]+'
+current_url = "https://livedoor.blogimg.jp/zeroforest" # 現在のライブドアブログURL
+img_url = current_url+'/*imgs/[\w/:%#\$&\?\(\)~\.=\+\-]+' # 画像のURLURL
 
 file_name = "backup.txt" # 読み込むファイル名
 dir_name = "images" # 画像保存先フォルダ名
@@ -20,7 +21,7 @@ def download_file(url, dst_path):
 
 images = [] # 画像URL格納
 
-# 画像のURL取得
+# backup.txtから、画像URL取得
 with open(file_name, "r") as file_data:
   for line in file_data:
     url_list = re.findall(img_url, line)
@@ -29,12 +30,12 @@ with open(file_name, "r") as file_data:
 
 print(str(len(images))+"個の画像を取得します")
 
-# 指定した画像保存先フォルダがなければ作成する。
+# 画像保存先フォルダがなければ作成する。
 try:
-  os.makedirs(directory_name)
+  os.makedirs(dir_name)
 except:
   pass
 
-# 画像の書き込み
+# 画像のダウンロード
 for img in images:
   download_file(img, os.path.join(dir_name, os.path.basename(img)))
